@@ -1,0 +1,20 @@
+h1{
+
+	text-align: center;
+}
+
+
+.parent{
+	width: 60%;
+	text-align: center;
+    margin: 0 auto; 
+
+}
+
+
+#animation_module{
+
+	/*height: 600em;
+	width:1000;*/
+	border: 3px solid black;
+}
