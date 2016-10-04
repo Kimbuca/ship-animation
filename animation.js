@@ -1,13 +1,13 @@
 //set of points, you can add later
 var points = []; //each point has neighbors and they share same x or y components
 var grid = []; 	 //grid in accordance to the points
-var pathp = [];
-var figures = [];
+var pathp = [];	 //already selected point
+var figures = []; //available points
 
 
 var height = 600;
 var width = 1000;
-
+var round = 0;
 
 
 //THE MAGNIFICENT GRID
@@ -25,6 +25,7 @@ var width = 1000;
 var init_x = 50; //based on width incrementing +175 
 var init_y = 550; //based on height -100		
 var i =0;
+
 
 
 for(var j=0; j<6; j++){
@@ -58,71 +59,49 @@ for(var j=0; j<6; j++){
 		i++;
 		init_x += 175;
 	}
-
 	
-
 	init_y -=100;
-
-		//if(points[j].x == pr)
-			//points[].neighbors[] = 
-
-	//var rx = Math.floor((Math.random() * row) + 1); 
-	//var ry = Math.floor((Math.random() * column) + 1); 
-
-	///connections are done in the four ways and it must be checked that it doesnt violate the canvas boundaries
-	/*
-	for(var r=0; r<9; r++){
-		console.log(i);
-		points[i] = {x: '', y:''};
-		points[i].x = row;
-		points[i].y = column;
-		row += 50;
-		console.log("this is row" +row);
-		console.log("this is col " +column);
-		i++;
-	}*/
 
 }
 
 
-//does the grid HARDCODED ...sorry
-//function that plots
-var cx = document.querySelector("canvas").getContext("2d");
-  cx.beginPath();
-  cx.lineWidth = 3;
 
+
+//function that plots the grid
+var cx = document.querySelector("canvas").getContext("2d");
+cx.lineWidth = 3;
+
+drawGrid = function(){
+
+  cx.strokeStyle = '#000000';
+  cx.beginPath();
+   
   //horizontal axis
   for(var i=0, y=550; i<6; i++, y-=100 ){
   	  cx.moveTo(50, y);
   	  cx.lineTo(925, y);
+  	}
+ 	cx.stroke();
 
-   }
-
- cx.stroke();
-
- //vertical axis
- for(var i=0, x=50; i<6; i++, x+=175 ){
+ 	//vertical axis
+ 	for(var i=0, x=50; i<6; i++, x+=175 ){
   	  cx.moveTo(x, 550);
   	  cx.lineTo(x, 50);
 
    }
    cx.stroke();
-
-  /*
-  for (var i=0; i < points.length-1; i++) {
-  	//console.log(points[i].x);
-    cx.moveTo(points[i].x, points[i].y);
-    cx.lineTo(points[i+1].x, points[i+1].y);
-  }*/
+}
 
 
-
-  //pintar el primer punto
-/*
-  var gr = new jsGraphics(document.getElementById("parent"));
-  var col = new jsColor("red");
-  var pen = new jsPen(col,1);
-  var pt1 = new jsPoint(.y);*/
+var drawPath = function(){
+	 cx.beginPath();
+  cx.strokeStyle = '#ff0000';
+   for(i=1;i<pathp.length;i++){
+   	  cx.moveTo(pathp[i-1].x, pathp[i-1].y);
+  	  cx.lineTo(pathp[i].x, pathp[i].y);
+   }
+  cx.stroke();
+};
 
 
    //point class
@@ -131,17 +110,15 @@ var cx = document.querySelector("canvas").getContext("2d");
    		this.y = y;
    		this.r = r;
    		this.color = c;
-   		this.neighbors = n;
    };
 
 
    
-   drawOnCanvas = function(){
+  drawOnCanvas = function(){
 
-   		console.log('total Figures = ' +figures.length);
-   		console.log('total Choosen Path = ' +pathp.length);
+
    		for(var i=0; i<figures.length; i++){
-   			 	  	cx.beginPath();
+   			 	  cx.beginPath();
 				  cx.arc(figures[i].x, figures[i].y, 22, 0, 2 * Math.PI, false);
 				  cx.fillStyle = figures[i].color;
 				  cx.fill();
@@ -160,36 +137,43 @@ var cx = document.querySelector("canvas").getContext("2d");
 				  cx.stroke();
    		}
 
-
    };
 
-   //initial point
-   cx.beginPath();
-   cx.arc(points[0].x, points[0].y, 22, 0, 2 * Math.PI, false);
-   cx.fillStyle = 'green';
-   cx.fill();
-   cxlineWidth = 5;
-   cx.strokeStyle = '#003300';
-   cx.stroke();
 
 
    var draw_neighbors = function(current_point){
 
-   		console.log(figures.length);
+   		var my_neighbors;
+
+   		//delete previous active points
+   		console.log('prev pop ' +figures.length);
    		while(figures.length > 0){
    			figures.pop();
-   			console.log(figures.length);
+   			drawOnCanvas();
    		}
 
-		   //draw neigbors
-		   console.log(current_point.neighbors.length);
-		for(var a=0; a<current_point.neighbors.length; a++){
-		   	var p = new Point(current_point.neighbors[a].x, current_point.neighbors[a].y, 22, 'green', current_point.neighbors);
-		   	figures.push(p);
-		   	console.log(p);	
+   		//search for specific point in Points
+		for(var i= 0; i<points.length; i++){
+			if(points[i].x == current_point.x &&
+					points[i].y == current_point.y){
+
+					my_neighbors = points[i].neighbors;
+					//console.log('found!' +my_neighbors);
+				}
+
 		}
+
+		//add points to current options
+		for(var a=0; a<my_neighbors.length; a++){		
+		   	var p = new Point(my_neighbors[a].x, my_neighbors[a].y, 22, 'green');
+		   	figures.push(p);
+		   	//console.log(p);	
+		}
+
 		drawOnCanvas();
 	}
+
+
 
 
 
@@ -198,24 +182,24 @@ var cx = document.querySelector("canvas").getContext("2d");
 		var py = Math.pow(Math.abs(ypos- point.y),2);
 		var hyp = Math.sqrt(px+py);
 
-		if(hyp <= point.r){
-			return true;
-			//
-			}else{
-
-			return false;
-			//
-		}
+		if(hyp <= point.r){ return true;
+			}else{ return false;}
 	};
 
-	/// MOUSE EVENTS
 
+
+
+
+
+
+
+	/// MOUSE EVENTS
 	var canvas = document.getElementById("animation_module");
 	canvas.onmousemove = function(mouse){
 		
 		var xCoord = mouse.clientX-mouse.target.offsetLeft;
 		var yCoord = mouse.clientY-mouse.target.offsetTop;
-
+		console.log(xCoord);
 
 		for(var i =0; i<figures.length; i++){
 
@@ -246,17 +230,49 @@ var cx = document.querySelector("canvas").getContext("2d");
 				//trigger animation
 				current_point.color = 'red';
 				pathp.push(current_point);
-				//figures.splice(i,1);
 				draw_neighbors(current_point);
-				//cx.clearRect(0,0,width, height);
+				//console.log('current point' +current_point.neighbors[0].x);
+				cx.clearRect(0, 0, width, height);
+				drawGrid();
 				drawOnCanvas();
 
+				//$('body').find('i[rel=modal]').open();
+				 $('#vid').modal('show'); 
 			}
-			
 		};
-		 
 	};
 	
+	//changes from video to video
+	$("#video").attr("src","https://www.youtube.com/embed/JE7tC9F5oVs");
+
+
+
+
+
+	//////// INITIALIZATION
+
+	drawGrid();
+
+	
+		//initial point
+		/*
+	   cx.beginPath();
+	   cx.arc(points[0].x, points[0].y, 22, 0, 2 * Math.PI, false);
+	   cx.fillStyle = 'red';
+	   cx.fill();
+	   cxlineWidth = 5;
+	   cx.strokeStyle = '#003300';
+	   cx.stroke();*/
+  	   var p = new Point(points[0].x, points[0].y, 22, 'green');
+	   pathp.push(p)
+	 //draw initial neighbors
+	   draw_neighbors(points[0]);
+	   
+
+	
+   
+
+
 
 
 
