@@ -1,3 +1,3 @@
 # ship-animation
 
-small map and ship animation made with javascript
+Map and ship animation made with javascript and jQuery modal
