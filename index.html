@@ -1,36 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-	
-	<meta charset="utf-8">
-		
-	<script src="dist/jquery-3.1.1.js"></script>
-	<script src="dist/jquery.modal.min.js" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="dist/jquery.modal.css" type="text/css" media="screen" />
-	 <!-- Link to open the modal -->
-  
-	<link rel="stylesheet" href="mystyle.css">
-	<title>My ship animation</title>
-</head>
-<body>	
+	<head>
+		<meta charset="utf-8">
+			
+		<script src="dist/jquery-3.1.1.js"></script>
+		<script src="dist/jquery.modal.min.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="dist/jquery.modal.css" type="text/css" media="screen" />
+		 <!-- Link to open the modal -->
+	  
+		<link rel="stylesheet" href="mystyle.css">
+		<title>Pirate Bay</title>
+	</head>
 
+	<body>	
+		<div id="vid" style="display:none;">
+	    	<iframe id="video" width="420" height="315" src="https://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1"></iframe> 	
+		</div>
 
-	<div id="vid" style="display:none;">
-    	 <iframe id="video" width="420" height="315"
-			src="https://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1">
-		 </iframe> 	
-    </div>
-
-	<h1>Javascript App</h1>
-	<div class="parent" id="parent">
-		<canvas id="animation_module" width="1000" height="600">
-	</canvas>
-	</div>
-	
-	<script type="text/javascript" src="animation.js"></script>
-	
-     
-  </div>
-
-</body>
+		<h1>Treasure Map</h1>
+		<div class="parent-container" id="parent">
+			<canvas id="animation-module" width="1000" height="600"></canvas>
+		</div>
+		<script type="text/javascript" src="animation.js"></script> 
+	</body>
 </html>

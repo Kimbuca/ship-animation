@@ -27,44 +27,32 @@ var init_y = 550; //based on height -100
 var i =0;
 
 
+for(var j=0; j<6; j++, init_y -=100, init_x = 50){
 
-for(var j=0; j<6; j++){
-	init_x = 50;
 
-	for(var r=0; r<6; r++){
-		points[i] = {x: '', y:'', neighbors:[]};
-		points[i].x = init_x;
-		points[i].y = init_y;
+	for(var r=0; r<6; r++, i++, init_x += 175){
+
+		points[i] = {x: init_x, y:init_y, neighbors:[]};
 
 		if(r != 5){
 
 			//make exception to borders
-			points[i].neighbors.push({
-				//right neigh
-				x: init_x+175, y:init_y
-			});
+			points[i].neighbors.push({ x: init_x+175, y:init_y });
+			points[i].neighbors.push({ x: init_x-175, y:init_y });
 
-			points[i].neighbors.push({
-				//left neigh
-				x: init_x, y:init_y-100
-			});
+			points[i].neighbors.push({ x: init_x, y:init_y-100 });
+			points[i].neighbors.push({ x: init_x, y:init_y+100 });
+
 
 		}else{
-			//ending just can go up
-			points[i].neighbors.push({
-				x: init_x, y:init_y-100
-			});
+
+			//ending just can go up and left
+			points[i].neighbors.push({ x: init_x-175, y:init_y });
+			points[i].neighbors.push({ x: init_x, y:init_y-100 });
 		}
-		console.log(points[i].neighbors[0].y +" and " +points[i].neighbors[0].x);
-		i++;
-		init_x += 175;
+		//console.log(points[i].neighbors[0].y +" and " +points[i].neighbors[0].x);
 	}
-	
-	init_y -=100;
-
 }
-
-
 
 
 //function that plots the grid
@@ -94,8 +82,8 @@ drawGrid = function(){
 
 
 var drawPath = function(){
-	 cx.beginPath();
-  cx.strokeStyle = '#ff0000';
+	cx.beginPath();
+  	cx.strokeStyle = '#ff0000';
    for(i=1;i<pathp.length;i++){
    	  cx.moveTo(pathp[i-1].x, pathp[i-1].y);
   	  cx.lineTo(pathp[i].x, pathp[i].y);
@@ -108,7 +96,7 @@ var drawPath = function(){
    Point = function(x,y,r,c, n){
    		this.x = x; 
    		this.y = y;
-   		this.r = r;
+   		this.r = r; //radius
    		this.color = c;
    };
 
@@ -154,13 +142,10 @@ var drawPath = function(){
 
    		//search for specific point in Points
 		for(var i= 0; i<points.length; i++){
-			if(points[i].x == current_point.x &&
-					points[i].y == current_point.y){
-
-					my_neighbors = points[i].neighbors;
+			if(points[i].x == current_point.x && points[i].y == current_point.y){
+				my_neighbors = points[i].neighbors;
 					//console.log('found!' +my_neighbors);
-				}
-
+			}
 		}
 
 		//add points to current options
@@ -175,37 +160,25 @@ var drawPath = function(){
 
 
 
-
-
 	var isTouching = function(xpos, ypos, point){
 		var px = Math.pow(Math.abs(xpos - point.x),2);
 		var py = Math.pow(Math.abs(ypos- point.y),2);
 		var hyp = Math.sqrt(px+py);
-
-		if(hyp <= point.r){ return true;
-			}else{ return false;}
+		return hyp <= point.r;
 	};
 
 
-
-
-
-
-
-
 	/// MOUSE EVENTS
-	var canvas = document.getElementById("animation_module");
+	var canvas = document.getElementById("animation-module");
 	canvas.onmousemove = function(mouse){
 		
 		var xCoord = mouse.clientX-mouse.target.offsetLeft;
 		var yCoord = mouse.clientY-mouse.target.offsetTop;
-		console.log(xCoord);
 
 		for(var i =0; i<figures.length; i++){
 
 			var current_point = figures[i];
-			console.log(current_point);
-			//console.log(hyp);
+		
 			if(isTouching(xCoord,yCoord,current_point)){
 				current_point.color = 'blue';
 			}else{
@@ -237,7 +210,7 @@ var drawPath = function(){
 				drawOnCanvas();
 
 				//$('body').find('i[rel=modal]').open();
-				 $('#vid').modal('show'); 
+			 	//$('#vid').modal('show'); 
 			}
 		};
 	};
@@ -246,27 +219,18 @@ var drawPath = function(){
 	$("#video").attr("src","https://www.youtube.com/embed/JE7tC9F5oVs");
 
 
+	(function init() {
+		drawGrid();
 
+		let initialPoint = points[Math.floor(Math.random() * 36)];
+		let p = new Point(initialPoint.x, initialPoint.y, 22, 'red');
+   		pathp.push(p);
+   		draw_neighbors(initialPoint);
+	})();
 
-
-	//////// INITIALIZATION
-
-	drawGrid();
 
 	
-		//initial point
-		/*
-	   cx.beginPath();
-	   cx.arc(points[0].x, points[0].y, 22, 0, 2 * Math.PI, false);
-	   cx.fillStyle = 'red';
-	   cx.fill();
-	   cxlineWidth = 5;
-	   cx.strokeStyle = '#003300';
-	   cx.stroke();*/
-  	   var p = new Point(points[0].x, points[0].y, 22, 'green');
-	   pathp.push(p)
-	 //draw initial neighbors
-	   draw_neighbors(points[0]);
+ 	//draw initial neighbors
 	   
 
 	
